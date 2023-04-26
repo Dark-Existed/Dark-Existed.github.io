@@ -1,0 +1,205 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FNet: Mixing Tokens with Fourier Transforms | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="FNet: Mixing Tokens with Fourier Transforms | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="用傅里叶变换替换了 Self-Attention
+首先，本论文通过他人的实验举例，说明Self-Attention中如果将权重冻结，使用高斯分布随机初始化，最终也能得到不错的效果。
+由此可以尝试使用傅里叶变换替换此部分，从而解决 O(n2)..." />
+    <meta name="keywords" content="NLP" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              FNet: Mixing Tokens with Fourier Transforms
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-06-30
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/iDOOmkPx7/" class="post-tag">
+                  # NLP
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/fnet-mixing-tokens-with-fourier-transforms.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>用傅里叶变换替换了 Self-Attention</p>
+<p>首先，本论文通过他人的实验举例，说明Self-Attention中如果将权重冻结，使用高斯分布随机初始化，最终也能得到不错的效果。</p>
+<p>由此可以尝试使用傅里叶变换替换此部分，从而解决 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> 的问题。</p>
+<p>通过实验发现去掉傅里叶变换的虚部的结果更好，所以没有使用原版的傅里叶变换。</p>
+<figure data-type="image" tabindex="1"><img src="https://dark-existed.github.io//post-images/1662433590029.png" alt="" loading="lazy"></figure>
+<p>与 Self-Attention 相同，可以让后面的部分获得所有 token 的信息。</p>
+<ul>
+<li>具体细节是 先沿着 hidden dimension 施加 1D 傅里叶变换，再向 sequence length dimension 施加傅立叶变换。</li>
+</ul>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi><mo>=</mo><mi mathvariant="normal">ℜ</mi><mrow><mo fence="true">(</mo><msub><mi mathvariant="script">F</mi><mtext>seq </mtext></msub><mrow><mo fence="true">(</mo><msub><mi mathvariant="script">F</mi><mtext>hidden </mtext></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo fence="true">)</mo></mrow><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">y=\Re\left(\mathcal{F}_{\text {seq }}\left(\mathcal{F}_{\text {hidden }}(x)\right)\right)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord">ℜ</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord"><span class="mord mathcal" style="margin-right:0.09931em;">F</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">seq </span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord"><span class="mord mathcal" style="margin-right:0.09931em;">F</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">hidden </span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span></span></p>
+<p>做了以下几种模型</p>
+<ol>
+<li>BERT-BASE</li>
+<li>FNet-encoder : 将每个 self-attention 都替换成 上文描述的傅里叶变换</li>
+<li>Linear encoder : 将每个 self-attention 都替换成 两个 learnable, dense, linear sublayers ，分别施加在 hidden dimension 和 sequence length dimension</li>
+<li>Random encoder : 将每个 self-attention 替换成随机初始化的矩阵，参数不可训练， 分别施加在 hidden dimension 和 sequence length dimension</li>
+<li>Feed Forward-only (FF-only) encoder : 直接去掉 self-attention</li>
+</ol>
+<p>参数量对比</p>
+<figure data-type="image" tabindex="2"><img src="https://dark-existed.github.io//post-images/1662433707094.png" alt="" loading="lazy"></figure>
+<p>训练结果对比</p>
+<p>FNet-Hybrid-Base 是把最后两层的傅里叶变换换成了 self-attention</p>
+<figure data-type="image" tabindex="3"><img src="https://dark-existed.github.io//post-images/1662433724522.png" alt="" loading="lazy"></figure>
+<p>速度对比<br>
+<img src="https://dark-existed.github.io//post-images/1662433748822.png" alt="" loading="lazy"></p>
+<figure data-type="image" tabindex="4"><img src="https://dark-existed.github.io//post-images/1662433774794.png" alt="" loading="lazy"></figure>
+<p>总结以下该篇论文：</p>
+<ol>
+<li>个人认为一般般，没什么很出色的亮点。 速度虽然说快了不少，但是效果也降了挺多 。</li>
+<li>本文中说 Linear encoder 虽然准确高了，但是训练过程中比较不稳定，然后在GPU上比较慢，内存占用比较大。不稳定的问题的话，个人观点是，没有对输出结果加约束，导致训练过程中，值的变换比较大，从而出现训练中不稳定的结果。可以使用某些约束来控制参数中的值的范围，使训练稳定下来。</li>
+<li>本文的一个观点是，self-attention 并不是说非常重要，只要有这么个可以混合全局信息的变换就行，想要提高速度，就换成一个其他的快一点的变换。所以个人的想法是，既然傅里叶变换可以，那只要找到个速度快，输出值的范围比较稳定的变换，达到的效果也能差不多的。</li>
+</ol>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/on-layer-normalization-in-the-transformer-architecture/">
+              <h3 class="post-title">
+                On Layer Normalization in the Transformer Architecture
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,208 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parameter-Efficient Transfer Learning for NLP | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Parameter-Efficient Transfer Learning for NLP | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="目前大部分 NLP 任务都是用 Pre-train 再 fine-tune 的形式，虽然说fine-tune挺高效的了，但是在不同的下游任务上都要对模型进行fine-tune 花费的成本也挺高。
+那么有没有一种方法，可以使得fine-tun..." />
+    <meta name="keywords" content="NLP" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Parameter-Efficient Transfer Learning for NLP
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-07-10
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/iDOOmkPx7/" class="post-tag">
+                  # NLP
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/parameter-efficient-transfer-learning-for-nlp.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>目前大部分 NLP 任务都是用 Pre-train 再 fine-tune 的形式，虽然说fine-tune挺高效的了，但是在不同的下游任务上都要对模型进行fine-tune 花费的成本也挺高。</p>
+<p>那么有没有一种方法，可以使得fine-tune 更为高效呢？</p>
+<p>本文提出了 adapter tuning，使用adapter module，针对每个下游任务都只需要对少量的参数进行训练，就可以适应该下游任务。高效低进行参数共享。</p>
+<figure data-type="image" tabindex="1"><img src="https://dark-existed.github.io//post-images/1662388628371.png" alt="" loading="lazy"></figure>
+<h2 id="适应下游任务的几种形式">适应下游任务的几种形式</h2>
+<p>假设有一个神经网络有参数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ω</mi></mrow><annotation encoding="application/x-tex">\omega</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">ω</span></span></span></span>，该神经网络可以表示为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>ϕ</mi><mi>ω</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\phi_{\omega}(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">ϕ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">ω</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span></p>
+<ol>
+<li>
+<p>feature-based</p>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>χ</mi><mi>v</mi></msub><mo>(</mo><msub><mi>ϕ</mi><mi>ω</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">\chi_{v}(\phi_{\omega}(x))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">χ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">v</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">ϕ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">ω</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></p>
+</li>
+<li>
+<p>fine-tune</p>
+<p>对原来的<br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ω</mi></mrow><annotation encoding="application/x-tex">\omega</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">ω</span></span></span></span> 进行重新调整</p>
+</li>
+<li>
+<p>adapter-turning</p>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>ϕ</mi><mrow><mi>ω</mi><mo separator="true">,</mo><mi>v</mi></mrow></msub><mo>(</mo><mi>x</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\phi_{\omega,v}(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">ϕ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">ω</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">v</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span> 只对 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span></span></span></span> 就行训练，通常是对网络添加新的层，但是只要<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">∣</mi><mi>v</mi><mi mathvariant="normal">∣</mi><mo>≪</mo><mi mathvariant="normal">∣</mi><mi>w</mi><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">|v|\ll|w|</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≪</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mord">∣</span></span></span></span> 这就是很高效的做法。</p>
+</li>
+</ol>
+<h2 id="adapter-module">Adapter Module</h2>
+<p>不是像 feature-based 那样只在最后面添加层，而是对模型中注入新的层。</p>
+<figure data-type="image" tabindex="2"><img src="https://dark-existed.github.io//post-images/1662388668011.png" alt="" loading="lazy"></figure>
+<p>整体思路就是，在Transformer中添加 Adapter 模块。在GLUE 和 不同规模的文本分类任务上进行测试。</p>
+<p>相比原本的 Bert-Large 在 GLUE，需要fine-tune 的参数量为 9X，而使用这种方法只需要 1.3X。</p>
+<h2 id="最后">最后</h2>
+<p>这种方法还是挺有意思的，相比与原来的只在，freeze住模型，在输出最后叠加几层，从中间部分重新训练少量参数，利用原本的预训练模型，针对特定的下游任务可以快速迁移。很适合数据分布相同但是存在多下游任务应用不同的场景，可以快速完成不同下游任务的训练。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%80%82%E5%BA%94%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E5%BD%A2%E5%BC%8F">适应下游任务的几种形式</a></li>
+<li><a href="#adapter-module">Adapter Module</a></li>
+<li><a href="#%E6%9C%80%E5%90%8E">最后</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/ernie-enhanced-representation-through-knowledge-integration/">
+              <h3 class="post-title">
+                ERNIE: Enhanced Representation through Knowledge Integration
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

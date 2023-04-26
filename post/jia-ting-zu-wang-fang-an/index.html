@@ -1,0 +1,267 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>家庭组网方案 | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="家庭组网方案 | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="硬件
+随着 Wi-Fi 的频段频率的提升，从 2.4GHz ➡️ 5.2GHz ➡️ 5.8GHz ➡️ 6GHz, 无线网络的速度也在不断提升。但是，随着频段的提升，Wi-Fi 的传输覆盖范围也在不断缩小，穿透能力不断减弱。因此，如果想要..." />
+    <meta name="keywords" content="Network" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              家庭组网方案
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-09-06
+              </span>
+              <span>
+                7 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/asTrzOonw/" class="post-tag">
+                  # Network
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/jia-ting-zu-wang-fang-an.jpeg" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h2 id="硬件">硬件</h2>
+<p>随着 Wi-Fi 的频段频率的提升，从 2.4GHz ➡️ 5.2GHz ➡️ 5.8GHz ➡️ 6GHz, 无线网络的速度也在不断提升。但是，随着频段的提升，Wi-Fi 的传输覆盖范围也在不断缩小，穿透能力不断减弱。因此，如果想要在家庭中实现无线网络的覆盖，一般使用以下两种方案：</p>
+<h3 id="mesh-组网">mesh 组网</h3>
+<ol>
+<li>无线 mesh: 通过无线信号进行数据的回传，将多个无线路由器组成一个无线网络，实现无线网络的覆盖。无线 mesh 的优点是：无线路由器之间的连接不需要有线连接，因此，无线 mesh 的部署成本较低，在部署的时候要想达到比较好的效果，在节点和节点之间尽量不要有障碍物的遮挡。在网络拓扑上是网状拓扑结构，没有中心节点，有一个节点连接外部网络，如果这个节点发生故障，那么整个网络无法访问外部网络。同时由于是个多跳网络，跳数会大一些，网络延迟高一些，无法承载过多的节点。<br>
+<img src="https://dark-existed.github.io//post-images/1662452382129.jpeg" alt="" loading="lazy"></li>
+<li>有线 mesh: 利用有线连接进行数据的回传，网络拓扑结构取决于如何进行连接，在合理规划的情况下，在拓扑结构上可以于 AC+AP 的方案类似(星状拓扑进行连接)，其他连接方式的部分节点，会增加网络跳数带来更高的延迟。缺点是需要提前规划网线的分布，同时预留供电条件。</li>
+</ol>
+<h3 id="acap-组网">AC+AP 组网</h3>
+<p><img src="https://dark-existed.github.io//post-images/1662452412453.png" alt="" loading="lazy"><br>
+AC: 用于管理 AP，下发配置给 AP。目前有一些厂商是将 路由器和 AC 合并，有一些 AP 有 fit AP 和 fat AP 两种模式，在 fat AP 模式下也可以实现 AC 所承担的功能。<br>
+AP：发射无线信号，用于接入终端，将终端接入到网络中。在供电上一般配合 PoE(Power over Ethernet) 交换机，由交换机通过网线进行供电。如果使用的是普通交换机那么可以使用 PoE Injector 进行供电，甚至有些 AP 可以使用 DC 供电，但是这样一来相较于有线 mesh 就没有明显的优势了。AP 在形态上一般有吸顶 AP，面板 AP，还有 Ubnt In-Wall 系列/华为 AirEngine5761S-11W 这种兼容 86 面板的形态。面板 AP，受到体积的限制，在信号和发热上比较存在短板，建议优先使用其他两种形态的 AP。</p>
+<h3 id="硬件选择">硬件选择</h3>
+<p>在硬件选择上</p>
+<p>mesh 组网一般可选择的厂商有：华为/小米/Linksys/华硕/TP-Link/锐捷<br>
+AC+AP 组网一般可选择的厂商有：Ubnt/华为/锐捷/华三/TP-Link/CISCO/ARUBA</p>
+<p>AC+AP 的组网方式一般来说可以提供给你更多的网络设置选项。</p>
+<p>在硬件的选择上最后选择了 TP-Link 的 AC+AP 方案：</p>
+<pre><code>路由器：TL-ER3210G * 1
+交换机：TL-SG2210PE * 1
+AP：TL-XAP5407GC * 2
+Server: CPU: N4500, RAM: 20GB, SSD: 512GB, 2.5GbE * 4
+</code></pre>
+<p>使用一台工控机充当服务器运行 ESXi，实现一些 Self-Hosted 的服务。</p>
+<h3 id="物理拓扑">物理拓扑</h3>
+<figure data-type="image" tabindex="1"><img src="https://dark-existed.github.io//post-images/1662452471665.png" alt="" loading="lazy"></figure>
+<h2 id="设置以及软件">设置以及软件</h2>
+<h3 id="wi-fi-参数设置">Wi-Fi 参数设置</h3>
+<p>Wi-Fi 在不同的频段中有其容纳的位置，信道是对频段的细分，2.4GHz 中划分了 13 个信道，每个信道之间相差 5Mhz，相邻的频段之间存在重叠的情况，会产生干扰。在 2.4GHz 下最多可以容纳三个互不干扰的 20Mhz 频宽或者一个 40Mhz 频宽的的 Wi-Fi 信号。<br>
+<img src="https://dark-existed.github.io//post-images/1662452484623.png" alt="" loading="lazy"><br>
+5GHz Wi-Fi 下，5.2GHz 的可用信道为 36-64，5.8GHz 是 149-161。如下图：<br>
+<img src="https://dark-existed.github.io//post-images/1662452489009.png" alt="" loading="lazy"><br>
+UNII-2-Extended 在国内是无法使用的，因此 5GHz 上最多可以容纳 3 个互不干扰的 80Mhz 或者 1 个 160Mhz 频段的信号。信号可以调整其通道编号来减少重叠进而避免干扰，2.4GHz 下以单个信道为单位，而 5GHz 下以 4 个信道为单位。选择低频宽的信号会让你有较为自由且干扰较小的选择，而 160MHz 虽然会让你获得更高的连接速度，但是对于信号强度和干扰也更为敏感。</p>
+<p>在设置时候可以查看周边的无线环境情况，以及信道的干扰情况，选择合适的信道和频宽。</p>
+<h3 id="ssid">SSID</h3>
+<p>在设置上广播了多个 SSID 用于不用的用途：</p>
+<ol>
+<li>Normal: 用于普通设备的 Wi-Fi，使用 5GHz 的 160Mhz 频宽</li>
+<li>Special: 用于特殊设备的 Wi-Fi，使用 5GHz 的 160Mhz 频宽</li>
+<li>IoT：用于物联网设备的 Wi-Fi，使用 2.4GHz 的 20Mhz 频宽</li>
+<li>Guest：用于访客的 Wi-Fi，使用 5GHz 的 160Mhz 频宽</li>
+</ol>
+<p>网络配置上将不同的 SSID 绑定到不同的 VLAN，以便于后续的网络管理，同时设置访客网络阻止访问其他网段。</p>
+<h3 id="vlan">VLAN</h3>
+<p>对网段进行划分实现不同的用途：</p>
+<ol>
+<li>VLAN 1：管理网段</li>
+<li>VLAN 10: Normal 网段</li>
+<li>VLAN 20: IoT 网段</li>
+<li>VLAN 30: Guest 网段</li>
+<li>VLAN 40: Special 网段</li>
+</ol>
+<h3 id="漫游设置">漫游设置</h3>
+<p>基于 802.11k/v/r 的漫游，可以让终端在不同 AP 之间自动切换，从而实现无缝漫游。</p>
+<p>一般设备在信号强度 -65dBm～-75dBm 之间会自动漫游，也可以手动调节触发漫游的信号强度阈值，如果漫游体验不佳，还可以设置和基于连接速度的漫游相结合。<br>
+同时可以考虑调整 AP 的信号发射功率，减少 AP 之间信号覆盖范围的重叠。减少干扰的同时，优化漫游体验。<br>
+使用相应的工具 (例如 Ubnt 的 WiFiman) 可以查看设备和 AP 之间的信号强度，多次测试后可以得到一个较为合理的信号强度。</p>
+<h3 id="server">Server</h3>
+<p>在这台机子上运行了 ESXi，用于运行一些虚拟机：</p>
+<ol>
+<li>OpenWrt: 方便软件的下载和更新，资料查阅，代码同步</li>
+<li>Ubuntu: 主要用于运行 Docker，例如 AdguardHome, Scrypted。还有 NTP Server，用于一些禁止联网的设备的同步时间。</li>
+<li>HomeAssistant: 用于家庭自动化，将小米系的智能家居设备接入 HomeKit</li>
+</ol>
+<p>ESXi 的网络设置上没有进行网口的直通，都是通过 vSwitch 进行管理，方便网口的管理和调整，通过测试能满足该场景的性能。<br>
+<img src="https://dark-existed.github.io//post-images/1662461264105.png" alt="" loading="lazy"><br>
+在设置上不同的系统设置了多个不同的虚拟网口：</p>
+<ol>
+<li>OpenWrt: VLAN 40, VLAN 1</li>
+<li>Ubuntu: VLAN 40,  VLAN 10</li>
+<li>HomeAssistant: VLAN 40, VLAN 10，VLAN 20</li>
+</ol>
+<p>默认网口使用 VLAN 40，方便更新各种软件和服务，加入其他网段 VLAN，为其他网段提供相应的服务。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%A1%AC%E4%BB%B6">硬件</a>
+<ul>
+<li><a href="#mesh-%E7%BB%84%E7%BD%91">mesh 组网</a></li>
+<li><a href="#acap-%E7%BB%84%E7%BD%91">AC+AP 组网</a></li>
+<li><a href="#%E7%A1%AC%E4%BB%B6%E9%80%89%E6%8B%A9">硬件选择</a></li>
+<li><a href="#%E7%89%A9%E7%90%86%E6%8B%93%E6%89%91">物理拓扑</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E8%BD%AF%E4%BB%B6">设置以及软件</a>
+<ul>
+<li><a href="#wi-fi-%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE">Wi-Fi 参数设置</a></li>
+<li><a href="#ssid">SSID</a></li>
+<li><a href="#vlan">VLAN</a></li>
+<li><a href="#%E6%BC%AB%E6%B8%B8%E8%AE%BE%E7%BD%AE">漫游设置</a></li>
+<li><a href="#server">Server</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/lora-low-rank-adaptation-of-large-language-models/">
+              <h3 class="post-title">
+                LORA: LOW-RANK ADAPTATION OF LARGE LANGUAGE MODELS
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,333 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>移动端开发基础认识（Android &amp; Flutter） | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="移动端开发基础认识（Android &amp; Flutter） | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="移动端主要操作系统
+iOS
+2007年开始，Apple公司开始推出iPhone，同时推出操作系统iOS。iOS在iOS4.0发布前名为iPhone OS。
+iOS 系统主要架构如下：
+
+
+Cocoa Touch Layer
+
+UI Kit
+..." />
+    <meta name="keywords" content="Android,Flutter" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              移动端开发基础认识（Android &amp; Flutter）
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-25
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/Y6czdZap-/" class="post-tag">
+                  # Android
+                </a>
+              
+                <a href="https://dark-existed.github.io/tag/McFbBvp1p/" class="post-tag">
+                  # Flutter
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/yi-dong-duan-kai-fa-ji-chu-ren-shi-android-and-flutter.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="移动端主要操作系统">移动端主要操作系统</h1>
+<h2 id="ios">iOS</h2>
+<p>2007年开始，Apple公司开始推出iPhone，同时推出操作系统iOS。iOS在iOS4.0发布前名为iPhone OS。<br>
+iOS 系统主要架构如下：<br>
+<img src="https://dark-existed.github.io//post-images/1662365136705.png" alt="" loading="lazy"></p>
+<ul>
+<li>Cocoa Touch Layer
+<blockquote>
+<p>UI Kit<br>
+定义应用程序的基础架构<br>
+提供核心功能，例如多任务，触摸操作<br>
+包含 EvenKit框架 GameKit框架 MapKit框架 MessageKit框架 等</p>
+</blockquote>
+</li>
+<li>Media Service Layer
+<blockquote>
+<p>提供 音频、视频、动画、图像的处理能力</p>
+</blockquote>
+</li>
+<li>Core Service Layer
+<blockquote>
+<p>为上层提供一些服务，例如 图形渲染的实现，语音通话的实现。</p>
+</blockquote>
+</li>
+<li>Core OS Layer
+<blockquote>
+<p>系统参数 目录服务 磁盘安装卸载事件</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="android">Android</h2>
+<figure data-type="image" tabindex="1"><img src="https://dark-existed.github.io//post-images/1662365178916.png" alt="" loading="lazy"></figure>
+<h1 id="关于-jit-与-aot">关于 JIT 与 AOT</h1>
+<p>简单的来说就是 “动态解释” 与 “静态编译” 这件事<br>
+常见 JIT 的有 JavaScript Python<br>
+常见 AOT 的有 C C++</p>
+<blockquote>
+<p>Java 编译过程<br>
+<img src="https://dark-existed.github.io//post-images/1662365266014.png" alt="" loading="lazy"></p>
+</blockquote>
+<h2 id="jit-just-in-time">JIT (Just in Time)</h2>
+<p>程序在运行时候一边翻译一边运行<br>
+JIT 编译保持了<strong>平台无关性</strong>，与平台处理相关的东西交给虚拟机。</p>
+<p>优点:<br>
+程序可以在运行时修改<br>
+吞吐量高<br>
+可以根据当前程序的运行情况生成最优的机器指令序列</p>
+<p>缺点:<br>
+启动相对较慢<br>
+占用内存较低<br>
+程序重新启动后要重新进行优化</p>
+<h2 id="aot-ahead-of-time">AOT (Ahead of Time)</h2>
+<p>程序在执行前就全部被翻译为机器码</p>
+<p>优点:<br>
+无需 runtime 就以运行<br>
+可以在程序运行初期就达到最高性能<br>
+可以显著的加快程序的启动</p>
+<p>缺点:<br>
+编译时间较长<br>
+无法做到对不同硬件架构的跨平台</p>
+<h2 id="android-上的-jit-与-aot">Android 上的 JIT 与 AOT</h2>
+<h3 id="dalvik">Dalvik</h3>
+<p>在 Android 2.2时候引入了 JIT ，在此之前需要逐条翻译解释执行。</p>
+<p>一直到 Android KitKat(4.4) 之前，Android上的虚拟机都是 Dalvik。<br>
+这时候使用的是 <strong>.dex</strong>字节码，是针对Android设备优化后所使用的运行时编译字节码。</p>
+<p>在程序运行的过程中进行选择热点代码（经常执行的代码）进行编译或者优化。（JIT）</p>
+<p><strong>.odex</strong> 是针对<strong>dex</strong>的优化，用Dalvik虚拟机的Android手机，在安装app的时候，会有一个优化dex的过程，使用dexopt将dex优化的更加高效于运行存储为odex</p>
+<p>由于odex中每个类的 id检索链表长度使用了short类型，short 类型能够表示的最大值是 65535，所以一个dex中的方法数不能超过 65535，否则会报错。<br>
+Dalvik规定了一个apk只能包含一个dex文件。</p>
+<h3 id="artandroid-runtime">ART(Android Runtime)</h3>
+<p>Android L(5.0) 时候 ART 完全替代了 Dalvik 作为了默认的虚拟机。ART 使用的是 AOT模式。<br>
+在 apk 编译的时候会进行预编译，生成OAT文件，仍然以<strong>odex</strong>保存，但是此时这个文件是可执行文件。<br>
+dex、odex均可以通过 dex2oat 来生成 oat文件，以实现兼容性。</p>
+<p>此时的代价就是需要耗费更多的存储空间存储 oat文件，apk在安装时候需要做oat的转换，安装应用较耗时。</p>
+<h3 id="混合模式">混合模式</h3>
+<p>Android N (7.0) 中引入了混合编译模式,同时使用 JIT和AOT。<br>
+<img src="https://dark-existed.github.io//post-images/1662365289299.png" alt="" loading="lazy"></p>
+<p>运行过程中解释执行，</p>
+<p>热点函数会被识别并被JIT编译后存储在 <strong>jit code cache</strong> 中并生成profile文件以记录热点函数的信息。经过 JIT 编译的方法将会记录到Profile配置文件中，Profile会存储在代码缓存中，并会在内存紧张时作为垃圾被回收。</p>
+<p>手机进入 IDLE（空闲） 或者 Charging（充电） 状态的时候，系统会扫描 App 目录下的 profile 文件并执行 AOT 过程进行编译。</p>
+<h1 id="移动端app开发技术">移动端App开发技术</h1>
+<h2 id="native">Native</h2>
+<p>即原生开发<br>
+iOS 平台一般是用 Swift、Objective-C 进行开发<br>
+Android 平台一般使用 Kotlin、Java 进行开发</p>
+<p>随着目前的发展 iOS上简易实用Swift、Android上使用Kotlin，这将获得更好的开发体验。</p>
+<p>同时 Android 上 Jetpack 对 Kotlin 支持较好，Jetpack Compose 仅支持Kotlin。<br>
+类似 SwiftUI 也仅支持 Swift。</p>
+<h2 id="跨平台">跨平台</h2>
+<p>跨平台开发的出现是为了增加代码的复用率，减少要适配多个平台带来的工作量，从而降低开发成本，同时给用户提供在不同平台上一致的体验。</p>
+<h3 id="web">Web</h3>
+<p>只要是使用的是在 Native应用中内嵌一个浏览器控件 Webview（iOS 为 UIWebView 或 WKWebView，Android 为 WebView）的方式进行 HTML5 页面渲染。<br>
+并定义 HTML5 与原生代码交互协议（JS Bridge），将部分原生系统能力暴露给 HTML5，从而扩展 HTML5 的边界。</p>
+<p>这种开发模式既有原生应用代码又有 Web 应用代码，因此又被称为 Hybrid 开发模式。由于 HTML5 代码只需要开发一次，就能同时在多个系统运行，因此大大降低了开发成本。</p>
+<p><strong>一个完整 HTML5 页面的展示要经历浏览器控件的加载、解析和渲染三大过程，性能消耗要比原生开发增加 N 个数量级。</strong></p>
+<ol>
+<li>浏览器控件加载 HTML5 页面的 HTML 主文档；</li>
+<li>加载过程中遇到外部 CSS 文件，浏览器另外发出一个请求，来获取 CSS 文件；</li>
+<li>遇到图片资源，浏览器也会另外发出一个请求，来获取图片资源。这是异步请求，并不会影响 HTML 文档的加载。</li>
+<li>加载过程中遇到 JavaScript 文件，由于 JavaScript 代码可能会修改 DOM 树，因此 HTML 文档会挂起渲染（加载解析渲染同步）的线程，直到 JavaScript 文件加载解析并执行完毕，才可以恢复 HTML 文档的渲染线程。</li>
+<li>JavaScript 代码中有用到 CSS 文件中的属性样式，于是阻塞，等待 CSS 加载完毕才能恢复执行。</li>
+</ol>
+<p>这是完成 HTML5 页面渲染的最基础的加载过程。加载、解析和渲染这三个过程在实际运行时又不是完全独立的，还会有交叉。也就是说，会存在一边加载，一边解析，一边渲染的现象。</p>
+<figure data-type="image" tabindex="2"><img src="https://dark-existed.github.io//post-images/1662365305050.png" alt="" loading="lazy"></figure>
+<h3 id="react-native-weex">React Native / Weex</h3>
+<p>这些解决方案优化了 Web 的加载、解析和渲染这三大过程，把影响它们独立运行的 Web 标准进行了裁剪，以相对简单的方式支持了构建移动端页面必要的 Web 标准（如 Flexbox 等），也保证了便捷的前端开发体验。</p>
+<p>这些解决方案基本上完全放弃了浏览器控件渲染，而是采用原生自带的 UI 组件实现代替了核心的渲染引擎，仅保持必要的基本控件渲染能力，从而使得渲染过程更加简化，也保证了良好的渲染性能。</p>
+<p>也就是说，这些解决方案，仍然采用前端友好的 JavaScript 进行开发，整体加载、渲染机制大大简化，并且由原生接管绘制，即将原生系统作为渲染的后端，为依托于 JavaScript 虚拟机的 JavaScript 代码提供所需要的 UI 控件的实体。</p>
+<p>但是 框架本身需要处理大量平台相关的逻辑，，随着系统版本变化和 API 的变化，我们还需要处理不同平台的原生控件渲染能力差异，修复各类奇奇怪怪的 Bug。</p>
+<figure data-type="image" tabindex="3"><img src="https://dark-existed.github.io//post-images/1662365319001.png" alt="" loading="lazy"></figure>
+<h3 id="flutter">Flutter</h3>
+<p>以 Flutter 为代表的则开辟了一种全新的思路，即从头到尾重写一套跨平台的 UI 框架，包括渲染逻辑，甚至是开发语言。</p>
+<ul>
+<li>渲染引擎依靠跨平台的 Skia 图形库来实现，Skia 引擎会将使用 Dart 构建的抽象的视图结构数据加工成 GPU 数据，交由 OpenGL 最终提供给 GPU 渲染，至此完成渲染闭环，因此可以在最大程度上保证一款应用在不同平台、不同设备上的体验一致性。</li>
+<li>而开发语言选用的是同时支持 JIT（Just-in-Time，即时编译）和 AOT（Ahead-of-Time，预编译）的 Dart，不仅保证了开发效率，更提升了执行效率（比使用 JavaScript 开发的泛 Web 容器方案要高得多）。</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://dark-existed.github.io//post-images/1662365330821.png" alt="" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E7%A7%BB%E5%8A%A8%E7%AB%AF%E4%B8%BB%E8%A6%81%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">移动端主要操作系统</a>
+<ul>
+<li><a href="#ios">iOS</a></li>
+<li><a href="#android">Android</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%B3%E4%BA%8E-jit-%E4%B8%8E-aot">关于 JIT 与 AOT</a>
+<ul>
+<li><a href="#jit-just-in-time">JIT (Just in Time)</a></li>
+<li><a href="#aot-ahead-of-time">AOT (Ahead of Time)</a></li>
+<li><a href="#android-%E4%B8%8A%E7%9A%84-jit-%E4%B8%8E-aot">Android 上的 JIT 与 AOT</a>
+<ul>
+<li><a href="#dalvik">Dalvik</a></li>
+<li><a href="#artandroid-runtime">ART(Android Runtime)</a></li>
+<li><a href="#%E6%B7%B7%E5%90%88%E6%A8%A1%E5%BC%8F">混合模式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%A7%BB%E5%8A%A8%E7%AB%AFapp%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF">移动端App开发技术</a>
+<ul>
+<li><a href="#native">Native</a></li>
+<li><a href="#%E8%B7%A8%E5%B9%B3%E5%8F%B0">跨平台</a>
+<ul>
+<li><a href="#web">Web</a></li>
+<li><a href="#react-native-weex">React Native / Weex</a></li>
+<li><a href="#flutter">Flutter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/transformer-quality-in-linear-time/">
+              <h3 class="post-title">
+                Transformer Quality in Linear Time
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

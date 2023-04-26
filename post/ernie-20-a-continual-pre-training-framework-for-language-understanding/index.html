@@ -1,0 +1,215 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ERNIE 2.0: A Continual Pre-Training Framework for Language Understanding | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="ERNIE 2.0: A Continual Pre-Training Framework for Language Understanding | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="所提出的ERNIE 2.0除了能够捕获预训练语言模型中常见的句子或者词的共现之外，更重要的是能够捕获词汇、句法和语义信息。
+
+提出一种持续学习的方法。本文框架是在一个持续的学习模式中训练所有这些任务。本文会先用一个简单的任务训练一个初始模型..." />
+    <meta name="keywords" content="NLP" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              ERNIE 2.0: A Continual Pre-Training Framework for Language Understanding
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-07-19
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/iDOOmkPx7/" class="post-tag">
+                  # NLP
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/ernie-20-a-continual-pre-training-framework-for-language-understanding.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>所提出的ERNIE 2.0除了能够捕获预训练语言模型中常见的句子或者词的共现之外，更重要的是能够捕获词汇、句法和语义信息。</p>
+<p><img src="https://dark-existed.github.io//post-images/1662387829452.png" alt="" loading="lazy"><br>
+提出一种持续学习的方法。本文框架是在一个持续的学习模式中训练所有这些任务。本文会先用一个简单的任务训练一个初始模型，然后不断引入新的预训练任务对模型进行升级。对于一个新任务，先用前一个任务的参数进行初始化。然后，新任务将与之前的任务一起训练，以确保模型不会忘记它所学到的知识。</p>
+<h3 id="task-embedding">Task Embedding</h3>
+<p>模型中的task embedding是用以适用不同特性的任务。N个任务分别记为0~N，每个任务id有其特定的task embedding。具体来说，每个任务都有其特定的token embedding 、position embedding和task embedding作为模型的输入。在微调阶段，可以选用任意一个任务id来进行模型的初始化。<br>
+<img src="https://dark-existed.github.io//post-images/1662387898977.png" alt="" loading="lazy"></p>
+<h3 id="模型具体做法">模型具体做法</h3>
+<p><img src="https://dark-existed.github.io//post-images/1662387923542.png" alt="" loading="lazy"><br>
+首先训练的时候先对某个任务进行训练，然后再往模型中不断加入其他任务，优化的 loss 是所有任务的 loss。</p>
+<p>训练的时候有三种不同级别的任务。</p>
+<ol>
+<li>Word-aware Pre-training Tasks
+<ol>
+<li>Knowledge Masking Task：像 ERINE 1.0 里面提出的那样做 mask 的做法。</li>
+<li>Capitalization Prediction Task(首字母大写预测)</li>
+<li>Token-Document Relation Prediction Task：预测段中的token是否出现在原始文档的其他段(segment)中</li>
+</ol>
+</li>
+<li>Structure-aware Pre-training Tasks
+<ol>
+<li>Sentence Reordering Task：句子重排任务是为了学习句子之间的关系。</li>
+<li>Sentence Distance Task：这个任务是希望通过文档级的信息学习句子之间的距离。该任务是一个3分类问题，0表示在同一个文档中2个句子是近邻；1表示2个句子在同一个文档中，但是非近邻；2表示2个句子来自不同文档。</li>
+</ol>
+</li>
+<li>Semantic-aware Pre-training Tasks
+<ol>
+<li>Discourse Relation Task：除了上述的距离任务，还引入2个句子之间语义或修辞关系的预测任务。对于英文任务，采用Sileo et.al构建的数据集进行模型的预训练。对于中文数据集，采用Sileo et.al的方法，本文也自动构建了一个中文数据集用于预训练。</li>
+<li>IR Relevance Task：这是一个3类别的分类任务，用于预测query和title之间的关系。将query作为第一个句子，title作为第二个句子。0类别表示，query和title是强相关的，这意味着输入query后该title被点击了；1类别表示，两者是弱相关的，这意味着query输入后，搜索引擎返回的title没有被点击；2类别表示，query和title是完全无关的，二者在语义上是随机的。PS：百度搜索引擎的搜索日志作为预训练数据集。</li>
+</ol>
+</li>
+</ol>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#task-embedding">Task Embedding</a></li>
+<li><a href="#%E6%A8%A1%E5%9E%8B%E5%85%B7%E4%BD%93%E5%81%9A%E6%B3%95">模型具体做法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/ernie-30-large-scaleknowledgeenhancedpre-training-forlanguageunderstanding-andgeneration/">
+              <h3 class="post-title">
+                ERNIE 3.0: LARGE-SCALEKNOWLEDGEENHANCEDPRE-TRAINING FORLANGUAGEUNDERSTANDING ANDGENERATION
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

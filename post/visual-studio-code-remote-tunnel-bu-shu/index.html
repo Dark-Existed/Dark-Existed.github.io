@@ -1,0 +1,204 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visual Studio Code Remote Tunnel 部署 | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Visual Studio Code Remote Tunnel 部署 | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="VS Code 更新到 1.74 后，推出了此项预览功能，提供了内网穿透的能力，使得可以在任何地方都访问到开启了此功能的设备。
+可以通过 VS Code 连接到开启了远程隧道的设备，也可以通过浏览器进行访问。
+通过 UI 进行设置
+
+只需要..." />
+    <meta name="keywords" content="Tools" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Visual Studio Code Remote Tunnel 部署
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-12-14
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/VMNJz6wlJ/" class="post-tag">
+                  # Tools
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/visual-studio-code-remote-tunnel-bu-shu.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>VS Code 更新到 1.74 后，推出了此项预览功能，提供了内网穿透的能力，使得可以在任何地方都访问到开启了此功能的设备。</p>
+<p>可以通过 VS Code 连接到开启了远程隧道的设备，也可以通过浏览器进行访问。</p>
+<h1 id="通过-ui-进行设置">通过 UI 进行设置</h1>
+<p><img src="https://dark-existed.github.io//post-images/1670989243841.png" alt="" loading="lazy"><br>
+只需要登录账户之后 <code>打开远程隧道访问...</code> 即可，关闭了之后也就无法进行访问了，在开启后会有弹出一条通知可以复制链接，直接在浏览器中访问即可以连接到此设备。</p>
+<h1 id="通过-cli-进行设置">通过 CLI 进行设置</h1>
+<h2 id="安装">安装</h2>
+<p>Ubuntu 上可以使用 <code>snap</code> 进行安装 <code>sudo snap install code --classic</code>，然而目前会存在<a href="https://github.com/microsoft/vscode/issues/168427">问题</a>，等修复后可以直接使用这种方式进行安装。</p>
+<p>从<a href="https://code.visualstudio.com/#alt-downloads">这里</a>, 手动下载 <code>.deb</code> 包，或者 <code>cli</code> 程序，进行安装。</p>
+<p>安装完成后首先使用 <code>code tunnel --accept-server-license-terms</code>，根据提示进行登录，登录完成后，<code>ctrl + c</code> 结束程序，使用 <code>code tunnel service install</code> 保持程序长期在后台进行。<code>code tunnel service uninstall</code> 可以卸载此后台服务。</p>
+<h2 id="访问">访问</h2>
+<h3 id="web">Web</h3>
+<p>在<a href="https://vscode.dev/">vscode.dev</a>，登录自己账户后可在侧栏中，<code>远程资源管理器</code> 中进行访问。</p>
+<h3 id="vs-code">VS Code</h3>
+<p>安装插件 <code>Remote - Tunnels</code>，就可以在侧栏 <code>远程资源管理器</code> 中进行访问。<br>
+<img src="https://dark-existed.github.io//post-images/1671002823128.png" alt="" loading="lazy"></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E9%80%9A%E8%BF%87-ui-%E8%BF%9B%E8%A1%8C%E8%AE%BE%E7%BD%AE">通过 UI 进行设置</a></li>
+<li><a href="#%E9%80%9A%E8%BF%87-cli-%E8%BF%9B%E8%A1%8C%E8%AE%BE%E7%BD%AE">通过 CLI 进行设置</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E8%AE%BF%E9%97%AE">访问</a>
+<ul>
+<li><a href="#web">Web</a></li>
+<li><a href="#vs-code">VS Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/jia-ting-zu-wang-fang-an/">
+              <h3 class="post-title">
+                家庭组网方案
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

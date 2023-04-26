@@ -1,0 +1,224 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>On Layer Normalization in the Transformer Architecture | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="On Layer Normalization in the Transformer Architecture | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+Post-LN: Layer Norm 放在 residual branch 之后
+Pre-LN: Layer Norm 放在 residual 过程中
+
+
+Post-LN Transformer 中 warm-up 的重要性
+
+在机器学..." />
+    <meta name="keywords" content="NLP" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              On Layer Normalization in the Transformer Architecture
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-03-23
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/iDOOmkPx7/" class="post-tag">
+                  # NLP
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/on-layer-normalization-in-the-transformer-architecture.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <ol>
+<li>Post-LN: Layer Norm 放在 residual branch 之后</li>
+<li>Pre-LN: Layer Norm 放在 residual 过程中<br>
+<img src="https://dark-existed.github.io//post-images/1662434280402.png" alt="" loading="lazy"></li>
+</ol>
+<h2 id="post-ln-transformer-中-warm-up-的重要性">Post-LN Transformer 中 warm-up 的重要性</h2>
+<figure data-type="image" tabindex="1"><img src="https://dark-existed.github.io//post-images/1662434284069.png" alt="" loading="lazy"></figure>
+<p>在机器学习训练中，通常学习率设置为常数，或者逐渐衰减。在训练 Transformer 时候一开始要将 learning rate 设置为接近0 然后再逐渐增大，之后再逐渐衰减。经过一定的迭代轮数后逐渐增长到初始的学习率，这个过程也被称作 warm-up 阶段。</p>
+<p>warm-up 是原始 Transformer 结构优化时的一个必备学习率调整策略。Transformer 结构对于 warm-up 的超参数（持续轮数、增长方式、初始学习率等）非常敏感，若调整不慎，往往会使得模型无法正常收敛。</p>
+<p>在 Post-LN Transformer 中输出层中的参数的预期梯度很大。所以如果不使用 warm-up 直接使用较大的 learning rate 来训练模型的话会使得模型没有优化，并且会导致模型的不稳定。</p>
+<p>layer norm 在控制梯度的尺度中起决定性的作用，本文提出是否有一个更好的进行 layer norm 的位置，来获得更好的经过 layer norm 的梯度。</p>
+<p>Pre-LN Transformer 在初始化的时候没有梯度消失和梯度爆炸的问题。本文尝试在训练 Pre-LN Transformer 的时候移除 warm-up，发现<strong>可以安全地移除 warm-up</strong> 。并且 Pre-LN Transformer 的 loss 下降更快。最终能够取得<strong>差不多的结果</strong>，但是<strong>使用的时间更短</strong>。</p>
+<p>当采用 Xavier 方法对 Post-LN Transformer 进行初始化后，通过对各隐层梯度值进行分析可以证明，在初始化点附近的 Post-LN Transformer 结构最后一层的梯度值非常大，同时随着反向传播的进行会导致梯度值迅速衰减。这种在各层之间不稳定的梯度分布必然会影响优化器的收敛效果，导致训练过程初始阶段的不稳定。</p>
+<figure data-type="image" tabindex="2"><img src="https://dark-existed.github.io//post-images/1662434334295.png" alt="" loading="lazy"></figure>
+<p>在一个德语-英语的翻译任务上进行实验，可以看出对于 Adam 和 SGD 在训练 Transformer 时，有 warm-up 都可以提升优化器的效果。warm-up 并不是特定地针对 Adam 才有效。</p>
+<h2 id="gradients-of-the-last-layer-in-the-transformer">Gradients of the last layer in the Transformer</h2>
+<ul>
+<li>L层 Post-LN Transformer 最后一层梯度</li>
+</ul>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mrow><mo fence="true">∥</mo><mfrac><mrow><mi mathvariant="normal">∂</mi><mover accent="true"><mi mathvariant="script">L</mi><mo>~</mo></mover></mrow><mrow><mi mathvariant="normal">∂</mi><msup><mi>W</mi><mrow><mn>2</mn><mo separator="true">,</mo><mi>L</mi></mrow></msup></mrow></mfrac><mo fence="true">∥</mo></mrow><mi>F</mi></msub><mo>≤</mo><mi mathvariant="script">O</mi><mo>(</mo><mi>d</mi><msqrt><mrow><mi>ln</mi><mo>⁡</mo><mi>d</mi></mrow></msqrt><mo>)</mo></mrow><annotation encoding="application/x-tex">\left\|\frac{\partial \tilde{\mathcal{L}}}{\partial W^{2, L}}\right\|_{F} \leq \mathcal{O}(d \sqrt{\ln d})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.0797em;vertical-align:-1.299725em;"></span><span class="minner"><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7799749999999999em;"><span style="top:-1.355975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-1.9619749999999998em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-2.5679749999999997em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.173975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.779975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.250025em;"><span></span></span></span></span></span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5971899999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.767331em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight">L</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9201899999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathcal">L</span></span></span></span><span style="top:-3.6023300000000003em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.22222em;">~</span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7799749999999999em;"><span style="top:-1.355975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-1.9619749999999998em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-2.5679749999999997em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.173975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.779975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.250025em;"><span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:-0.8213940000000001em;"><span style="top:-1.4002750000000002em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">F</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.299725em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.231095em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span></span><span class="mopen">(</span><span class="mord mathdefault">d</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.981095em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">d</span></span></span><span style="top:-2.941095em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg width='400em' height='1.08em' viewBox='0 0 400000 1080' preserveAspectRatio='xMinYMin slice'><path d='M95,702c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,
+-10,-9.5,-14c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54c44.2,-33.3,65.8,
+-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10s173,378,173,378c0.7,0,
+35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429c69,-144,104.5,-217.7,106.5,
+-221c5.3,-9.3,12,-14,20,-14H400000v40H845.2724s-225.272,467,-225.272,467
+s-235,486,-235,486c-2.7,4.7,-9,7,-19,7c-6,0,-10,-1,-12,-3s-194,-422,-194,-422
+s-65,47,-65,47z M834 80H400000v40H845z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.058904999999999985em;"><span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<ul>
+<li>L层 Pre-LN Transformer 最后一层梯度</li>
+</ul>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mrow><mo fence="true">∥</mo><mfrac><mrow><mi mathvariant="normal">∂</mi><mover accent="true"><mi mathvariant="script">L</mi><mo>~</mo></mover></mrow><mrow><mi mathvariant="normal">∂</mi><msup><mi>W</mi><mrow><mn>2</mn><mo separator="true">,</mo><mi>L</mi></mrow></msup></mrow></mfrac><mo fence="true">∥</mo></mrow><mi>F</mi></msub><mo>≤</mo><mi mathvariant="script">O</mi><mrow><mo fence="true">(</mo><mi>d</mi><msqrt><mfrac><mrow><mi>ln</mi><mo>⁡</mo><mi>d</mi></mrow><mi>L</mi></mfrac></msqrt><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left\|\frac{\partial \tilde{\mathcal{L}}}{\partial W^{2, L}}\right\|_{F} \leq \mathcal{O}\left(d \sqrt{\frac{\ln d}{L}}\right)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.0797em;vertical-align:-1.299725em;"></span><span class="minner"><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7799749999999999em;"><span style="top:-1.355975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-1.9619749999999998em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-2.5679749999999997em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.173975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.779975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.250025em;"><span></span></span></span></span></span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5971899999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.767331em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight">L</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord" style="margin-right:0.05556em;">∂</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9201899999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathcal">L</span></span></span></span><span style="top:-3.6023300000000003em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.22222em;">~</span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7799749999999999em;"><span style="top:-1.355975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-1.9619749999999998em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-2.5679749999999997em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.173975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span><span style="top:-3.779975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∥</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.250025em;"><span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:-0.8213940000000001em;"><span style="top:-1.4002750000000002em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">F</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.299725em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.0000299999999998em;vertical-align:-1.25003em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">O</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">(</span></span><span class="mord mathdefault">d</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6765949999999998em;"><span class="svg-align" style="top:-4.4em;"><span class="pstrut" style="height:4.4em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">L</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">d</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.6365950000000002em;"><span class="pstrut" style="height:4.4em;"></span><span class="hide-tail" style="min-width:1.02em;height:2.48em;"><svg width='400em' height='2.48em' viewBox='0 0 400000 2592' preserveAspectRatio='xMinYMin slice'><path d='M424,2478c-1.3,-0.7,-38.5,-172,-111.5,-514c-73,
+-342,-109.8,-513.3,-110.5,-514c0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,
+25c-5.7,9.3,-9.8,16,-12.5,20s-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,
+-13s76,-122,76,-122s77,-121,77,-121s209,968,209,968c0,-2,84.7,-361.7,254,-1079
+c169.3,-717.3,254.7,-1077.7,256,-1081c4,-6.7,10,-10,18,-10H400000v40H1014.6
+s-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185c-2,6,-10,9,-24,9
+c-8,0,-12,-0.7,-12,-2z M1001 80H400000v40H1014z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7634050000000001em;"><span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size4">)</span></span></span></span></span></span></span></p>
+<p>Layer Norm 会 normalize 梯度，在 Post-LN Transformer 中，输入到最后一层LN的scale是与 $ L$ 无关的，因此最后一层的梯度也是与 $ L$ 无关的。而在Pre-LN Transformer中，输入到最后一层的LN的 scale 是随 $ L$ 线性增长的，因此梯度将会以 $ \sqrt{L} $ 的比例 normalized。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#post-ln-transformer-%E4%B8%AD-warm-up-%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7">Post-LN Transformer 中 warm-up 的重要性</a></li>
+<li><a href="#gradients-of-the-last-layer-in-the-transformer">Gradients of the last layer in the Transformer</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/understanding-the-difficulty-of-training-transformers/">
+              <h3 class="post-title">
+                Understanding the Difficulty of Training Transformers
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

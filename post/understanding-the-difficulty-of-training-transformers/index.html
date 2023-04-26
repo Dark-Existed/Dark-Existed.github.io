@@ -1,0 +1,206 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Understanding the Difficulty of Training Transformers | Dark-Existed&#39;s Blog</title>
+<link rel="shortcut icon" href="https://dark-existed.github.io//favicon.ico?v=1682498565974">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://dark-existed.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Understanding the Difficulty of Training Transformers | Dark-Existed&#39;s Blog - Atom Feed" href="https://dark-existed.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="Transformer 训练比较难需要在设计合适的优化器和调节学习率上付出比较大的精力
+本文发现，不平衡的梯度不是训练不稳的原因。相反，发现了 amplification effect 对训练影响比较大。
+在多层 Transformer 模..." />
+    <meta name="keywords" content="NLP" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://dark-existed.github.io/">
+  <img class="avatar" src="https://dark-existed.github.io//images/avatar.png?v=1682498565974" alt="">
+  </a>
+  <h1 class="site-title">
+    Dark-Existed&#39;s Blog
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Understanding the Difficulty of Training Transformers
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-03-22
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://dark-existed.github.io/tag/iDOOmkPx7/" class="post-tag">
+                  # NLP
+                </a>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://dark-existed.github.io//post-images/understanding-the-difficulty-of-training-transformers.png" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>Transformer 训练比较难需要在设计合适的优化器和调节学习率上付出比较大的精力</p>
+<p>本文发现，不平衡的梯度不是训练不稳的原因。相反，发现了 amplification effect 对训练影响比较大。</p>
+<p>在多层 Transformer 模型中，每一层都严重地依赖 residual branch 使得训练变得不稳定，它会放大微小参数的扰动 (例如参数更新的变化)，并对模型的输出造成明显的干扰。</p>
+<p>根据分析的启发，提出了 Admin (Adaptive model initialization)，来稳定训练的早期阶段同时在后期释放模型的潜力。</p>
+<p>本文的分析是起源自发现：Post-LN (Post Layer Normalization) 比 Pre-LN (Pre Layer Normalization) 是 less robust 的。梯度消失并不是导致这个问题的直接原因，因为在解决梯度消失的问题后，并不能使得 Post-LN 变得稳定。这表明除了不平衡的梯度外，还有其他因素对模型的训练有很大的影响。</p>
+<p>根据进一步分析本文提出，发现了对于每个 Transformer residual block 依赖于它的 residual branch， residual branch 对训练的稳定性起决定性作用。</p>
+<p>Post-LN 依赖 residual branch 比依赖 Pre-LN 更多，Post-LN 的强烈依赖性会放大参数变化带来的扰动，并破坏训练的稳定性。此外，Pre-LN 对 residual branch 松散的依赖会限制算法的潜力，往往导致训练成较差的模型。</p>
+<p>本文提出的 Admin 在训练的早期限制了对 residual branch　的依赖性，并在后期释放模型的潜力。</p>
+<ol>
+<li>Post-LN: Layer Norm 放在 residual branch 之后</li>
+<li>Pre-LN: Layer Norm 放在 residual 过程中<br>
+<img src="https://dark-existed.github.io//post-images/1662433935585.png" alt="" loading="lazy"><br>
+<img src="https://dark-existed.github.io//post-images/1662433941345.png" alt="" loading="lazy"></li>
+</ol>
+<p><strong>Pre-LN 在训练时比 Post-LN 具有更好的 robust，但是 Post-LN 比 Pre-LN 更可能达到更好的效果。</strong></p>
+<p>Post-LN decoders 存在 梯度消失的问题，而 Post-LN encoders 没有这个问题。将梯度消失的问题解决也不能使训练稳定。</p>
+<p>Transformer 即使使用了 residual connection 也会存在梯度消失的问题。</p>
+<p>通过使用混合Post-LN 和 Pre-LN 的模型进行实验，证明只有 <strong>Post-LN decoders</strong> 存在梯度消失的问题，Post-LN encoders、 Pre-LN encoders、 Pre-LN decoders 不会有这个问题。</p>
+<p>并且所有类型的模块都是不平衡的。<br>
+<img src="https://dark-existed.github.io//post-images/1662433987692.png" alt="" loading="lazy"></p>
+<p>自适应的优化器成功地将不同的学习率分配给不同的参数，即使在不平衡的的梯度下也可以使更新的幅度一致。这解释了 SGD 优化器在训练 Transformer 时效果差的原因，无法较好地解决不平衡梯度的问题。</p>
+<h2 id="初始化时候的放大效应-amplification-effect">初始化时候的放大效应 （Amplification Effect）</h2>
+<p>尽管对 residual branch 的依赖更大模型会有表现效果的潜力。但是它放大了参数变化带来的波动。<br>
+<img src="https://dark-existed.github.io//post-images/1662434037688.png" alt="" loading="lazy"></p>
+<h2 id="admin-adaptive-model-initialization">Admin (Adaptive Model Initialization)</h2>
+<p>通过在训练的早期对 residual branch 的依赖进行控制。由于不同的训练参数和模型特性，很难推导通用的初始化方法。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E5%80%99%E7%9A%84%E6%94%BE%E5%A4%A7%E6%95%88%E5%BA%94-amplification-effect">初始化时候的放大效应 （Amplification Effect）</a></li>
+<li><a href="#admin-adaptive-model-initialization">Admin (Adaptive Model Initialization)</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://dark-existed.github.io/post/hello-gridea/">
+              <h3 class="post-title">
+                Hello Gridea
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://dark-existed.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
